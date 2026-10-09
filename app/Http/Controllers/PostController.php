@@ -7,12 +7,17 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index()
-    {
-        $posts = Post::with('user')->get();
+    
+public function index()
+{
+    $posts = Post::with('user')
+        ->where('user_id', auth()->id())
+        ->latest()
+        ->get();
 
-        return view('posts.index', compact('posts'));
-    }
+    return view('posts.index', compact('posts'));
+}
+
 
     public function create()
     {
