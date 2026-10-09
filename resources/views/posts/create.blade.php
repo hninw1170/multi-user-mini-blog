@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,17 +12,34 @@
         @csrf
 
         <div>
-            <label>Title</label>
+            <label for="title">Title</label>
             <br>
-            <input type="text" name="title">
+            <input
+                type="text"
+                id="title"
+                name="title"
+                value="{{ old('title') }}"
+            >
+
+            @error('title')
+                <p style="color: red;">{{ $message }}</p>
+            @enderror
         </div>
 
         <br>
 
         <div>
-            <label>Content</label>
+            <label for="content">Content</label>
             <br>
-            <textarea name="content" rows="5"></textarea>
+            <textarea
+                id="content"
+                name="content"
+                rows="5"
+            >{{ old('content') }}</textarea>
+
+            @error('content')
+                <p style="color: red;">{{ $message }}</p>
+            @enderror
         </div>
 
         <br>

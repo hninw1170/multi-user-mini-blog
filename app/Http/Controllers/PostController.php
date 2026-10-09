@@ -19,21 +19,29 @@ class PostController extends Controller
         return view('posts.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-        ]);
+    
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string|min:10',
+    ], [
+        'title.required' => 'Please enter a post title.',
+        'title.max' => 'The title must not exceed 255 characters.',
+        'content.required' => 'Please enter post content.',
+        'content.min' => 'Content must be at least 10 characters.',
+    ]);
 
-        Post::create([
-            'user_id' => auth()->id(),
-            'title' => $request->title,
-            'content' => $request->content,
-        ]);
+    Post::create([
+        'user_id' => auth()->id(),
+        'title' => $validated['title'],
+        'content' => $validated['content'],
+    ]);
 
-        return redirect('/posts');
-    }
+    return redirect('/posts')
+        ->with('success', 'Post created successfully!');
+}
+
 
     public function edit(Post $post)
     {
@@ -44,24 +52,31 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    public function update(Request $request, Post $post)
-    {
-        if ($post->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-        ]);
-
-        $post->update([
-            'title' => $request->title,
-            'content' => $request->content,
-        ]);
-
-        return redirect('/posts');
+    
+public function update(Request $request, Post $post)
+{
+    if ($post->user_id !== auth()->id()) {
+        abort(403);
     }
+
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string|min:10',
+    ], [
+        'title.required' => 'Please enter a post title.',
+        'title.max' => 'The title must not exceed 255 characters.',
+        'content.required' => 'Please enter post content.',
+        'content.min' => 'Content must be at least 10 characters.',
+    ]);
+
+    $post->update([
+        'title' => $validated['title'],
+        'content' => $validated['content'],
+    ]);
+
+    return redirect('/posts')
+        ->with('success', 'Post updated successfully!');
+}
 
     public function destroy(Post $post)
 {
