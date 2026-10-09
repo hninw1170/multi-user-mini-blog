@@ -14,36 +14,26 @@ Route::get('/home', function () {
     return view('home');
     });
     // Route with Parameters & Optional Fallbacks
-    Route::get('/user/{id}', function (string $id) {
-    return 'User ID: ' . $id;
+    Route::middleware('auth')->group(function () {
+
+        Route::get('/posts', [PostController::class, 'index']);
+    
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+    
+        Route::get('/posts/create', [PostController::class, 'create'])
+            ->name('posts.create');
+    
+        Route::post('/posts', [PostController::class, 'store'])
+            ->name('posts.store');
+    
+        Route::get('/posts/{post}/edit', [PostController::class, 'edit'])
+            ->name('posts.edit');
+    
+        Route::put('/posts/{post}', [PostController::class, 'update'])
+            ->name('posts.update');
+    
+        Route::delete('/posts/{post}', [PostController::class, 'destroy'])
+            ->name('posts.destroy');
     });
-    Route::get('/user/{name?}', function (?string $name = 'Guest') {
-    return 'Hello ' . $name;
-    });
-
-    Route::get('/posts', [PostController::class, 'index'])
-    ->middleware('auth');
-
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['auth'])->name('dashboard');
-
-    Route::get('/posts/create', [PostController::class, 'create'])
-    ->middleware('auth')
-    ->name('posts.create');
-
-    Route::post('/posts', [PostController::class, 'store'])
-    ->middleware('auth')
-    ->name('posts.store');
-
-    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])
-    ->middleware('auth')
-    ->name('posts.edit');
-
-    Route::put('/posts/{post}', [PostController::class, 'update'])
-    ->middleware('auth')
-    ->name('posts.update');
-
-    Route::delete('/posts/{post}', [PostController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('posts.destroy');
